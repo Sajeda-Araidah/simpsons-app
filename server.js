@@ -32,11 +32,11 @@ const client = new pg.Client(process.env.DATABASE_URL);
 // app routes here
 // -- WRITE YOUR ROUTES HERE --
 app.get('/',indexHandler);
-app.post('/'.addFavHandler);
+app.post('/',addFavHandler);
 app.get('/data',myDataHandler);
 app.get('detials/:quote_id',detailsHandler);
 app.put('detials/:quote_id',detailsUpdateHandler);
-app.delet('detials/:quote_id',detailsDeleteHandler);
+app.delete('detials/:quote_id',detailsDeleteHandler);
 
 // callback functions
 // -- WRITE YOUR CALLBACK FUNCTIONS FOR THE ROUTES HERE --
@@ -50,7 +50,7 @@ client.connect().then(() =>
 
 function indexHandler(request ,response){
  let url ='https://thesimpsonsquoteapi.glitch.me/quotes?count=10';
- superagent.get(url).set('User-Agent', '1.0').then(x =>{
+ superagent.get(url).then(x =>{
      let data = x.body ;
     response.render('index' ,{ result:data})
  })
@@ -70,9 +70,10 @@ function addFavHandler(request,response){
 }
 ////////////////////////////////////////////////////
 function myDataHandler(request,response){
+     
     let SQL =`SELECT * FROM quote `
-    client.query(SQL).then (y =>{
-        response.redirect('mydata', {collection :y.rows})
+    client.query(SQL).then (x =>{
+        response.render('mydata', {collection :x.rows})
     })
 }
 ////////////////////////////////////////////////////
@@ -80,7 +81,7 @@ function myDataHandler(request,response){
 let quote_id =request.params.quote_id;
     let SQL =`SELECT * FROM quote WHERE quote_id =$1 `
     client.query(SQL ,[quote_id]).then (y =>{
-        response.redirect(`/details/${quote_id}`)
+        response.redirect('mydata', {data :y.rows[0]})
     })
  }
 /////////////////////////////////////////////////////
