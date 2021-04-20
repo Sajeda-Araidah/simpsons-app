@@ -50,7 +50,7 @@ client.connect().then(() =>
 
 function indexHandler(request ,response){
  let url ='https://thesimpsonsquoteapi.glitch.me/quotes?count=10';
- superagent.get(url).then(x =>{
+ superagent.get(url).set('User-Agent', '1.0').then(x =>{
      let data = x.body ;
     response.render('index' ,{ result:data})
  })
